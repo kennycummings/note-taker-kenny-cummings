@@ -6,7 +6,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Middleware to handle JSON data
-app.use(express.json());
+app.use(express.static(path.join(__dirname, 'public'), { extensions: ['html'] }));
 
 // Serve static assets
 app.use(express.static(path.join(__dirname, 'public')));
