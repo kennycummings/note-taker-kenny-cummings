@@ -6,10 +6,10 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Middleware to handle JSON data
-app.use(express.static(path.join(__dirname, 'public'), { extensions: ['html'] }));
+app.use(express.json());
 
 // Serve static assets
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static('public'));
 
 // Routes
 app.get('/notes', (req, res) => {
@@ -23,7 +23,7 @@ app.get('/api/notes', (req, res) => {
 
 app.post('/api/notes', (req, res) => {
   const newNote = req.body;
-  newNote.id = generateUniqueId(); // You need to implement a function to generate a unique id
+  newNote.id = generateUniqueId();
 
   const notes = getNotes();
   notes.push(newNote);
