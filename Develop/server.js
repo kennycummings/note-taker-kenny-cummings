@@ -2,7 +2,7 @@ const express = require('express');
 const fs = require('fs');
 const path = require('path');
 
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 const app = express();
 
 // Middleware to handle JSON data
@@ -22,17 +22,20 @@ app.get('/api/notes', (req, res) => {
 });
 
 app.post('/api/notes', (req, res) => {
-  const newNote = req.body;
-  newNote.id = generateUniqueId();
+  try {
+    const newNote = req.body;
+    newNote.id = generateUniqueId();
 
-  const notes = getNotes();
-  notes.push(newNote);
-  saveNotes(notes);
+    const notes = getNotes();
+    notes.unshift(newNote);
 
-  res.json(newNote);
+    saveNotes(notes);
 
-fs.writeFile(path.join(__dirname, 'db.json'), JSON.stringify(notes))
-  
+    res.json(newNote);
+  } catch (error) {
+    console.error('Error in /api/notes:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
 });
 
 // Default route
@@ -42,12 +45,12 @@ app.get('*', (req, res) => {
 
 // Helper functions
 const getNotes = () => {
-  const data = fs.readFileSync(path.join(__dirname, 'db.json'), 'utf8');
+  const data = fs.readFileSync(path.join(__dirname, 'db/db.json'), 'utf8');
   return JSON.parse(data);
 };
 
 const saveNotes = (notes) => {
-  fs.writeFileSync(path.join(__dirname, 'db.json'), JSON.stringify(notes), 'utf8');
+  fs.writeFileSync(path.join(__dirname, 'db/db.json'), JSON.stringify(notes), 'utf8');
 };
 
 const generateUniqueId = () => {
