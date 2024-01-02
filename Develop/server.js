@@ -30,6 +30,9 @@ app.post('/api/notes', (req, res) => {
   saveNotes(notes);
 
   res.json(newNote);
+
+fs.writeFile(path.join(__dirname, 'db.json'), JSON.stringify(notes))
+  
 });
 
 // Default route
