@@ -39,7 +39,8 @@ app.post('/api/notes', (req, res) => {
 });
 
 app.delete('/api/notes/:id', (req, res) => {
-  removeNote(req.params.id)
+  const notes = removeNote(req.params.id)
+  res.json(notes);
 });
 
 // Default route
@@ -63,6 +64,7 @@ const removeNote=(id) => {
   const notes = JSON.parse(data);
     const filteredNotes = notes.filter((note) => note.id !== id)
     saveNotes(filteredNotes);
+    return filteredNotes;
 }
 
 const generateUniqueId = () => {
