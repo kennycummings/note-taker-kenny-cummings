@@ -38,7 +38,7 @@ app.post('/api/notes', (req, res) => {
   }
 });
 
-app.delete('/api/notes/:id', (req, res) => {
+app.delete('/notes/:id', (req, res) => {
   removeNote(req.params.id)
     .then(() => res.json({ ok: true }))
     .catch((err) => res.status(500).json(err));
@@ -61,10 +61,9 @@ const saveNotes = (notes) => {
 
 const removeNote=(id) => {
   // Get all notes, remove the note with the given id, write the filtered notes
-  const data = fs.readFileSync(path.join(__dirname, 'db/db.json'), 'utf8');
-  const notes = JSON.parse(data);
-    const filteredNotes = notes.filter((note) => note.id !== id)
-    saveNotes(filteredNotes);
+  return getNotes()
+    .then((notes) => notes.filter((note) => note.id !== id))
+    .then((filteredNotes) => saveNotes(filteredNotes));
 }
 
 const generateUniqueId = () => {
